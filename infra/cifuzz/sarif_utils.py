@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module for outputting SARIF data."""
+import os
+import json
+
+
 BUG_ID = 'bug'
 RULES = [
   {
@@ -66,4 +70,4 @@ def write_sarif_data(stacktraces, workspace):
   data = get_sarif_data(stacktraces[0])
   workspace.initialize_dir(workspace.sarif)
   with open(os.path.join(workspace.sarif, 'results.sarif')) as file_handle:
-    file_handle.write(data)
+    file_handle.write(json.dumps(data))
