@@ -150,7 +150,7 @@ class BaseFuzzTargetRunner:
         break
 
     self.clusterfuzz_deployment.upload_crashes()
-    self.sarif_utils.write_sarif_data(self._stacktraces, self.workspace)
+    sarif_utils.write_sarif_data(self._stacktraces, self.workspace)
     return bug_found
 
 
