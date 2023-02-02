@@ -87,11 +87,11 @@ def get_frame(crash_info):
 def get_frame_info(crash_info):
   frame = get_frame(crash_info)
   if not frame:
-    return (None, None)
-  return frame.filename,  frame.fileline
+    return (None, 0)
+  return frame.filename,  int(frame.fileline)
 
 def get_sarif_data(crash_info):
-  frame_info = get_frame(crash_info)
+  frame_info = get_frame_info(crash_info)
   result = {
       'level': 'error',
       'message': {
