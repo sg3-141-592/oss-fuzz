@@ -94,7 +94,7 @@ def get_sarif_data(crash_info):
       'ruleIndex': 0
   }
   data = copy.deepcopy(RULES)
-  data['runs'][0]['results'] = result
+  data['runs'][0]['results'].append(result)
   return data
 
 
