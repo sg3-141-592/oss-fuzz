@@ -78,20 +78,21 @@ def get_frame(crash_info):
   frames = crash_info.frames[0]
   if not frames:
     return
+  print('state', state)
   for frame in frames:
     if frame.function_name == state:
-      break
-  return frame
+      return frame
+  return None
 
 
 def get_frame_info(crash_info):
   frame = get_frame(crash_info)
   if not frame:
     return (None, 1)
+  print(frame.filename, int(frame.fileline or 1))
   return frame.filename, int(frame.fileline or 1)
 
 def get_sarif_data(crash_info):
-  print(crash_info.crash_stacktrace)
   frame_info = get_frame_info(crash_info)
   result = {
       'level': 'error',
