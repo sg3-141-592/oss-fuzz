@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Module for outputting SARIF data."""
+import copy
 import os
 import json
 
@@ -44,7 +45,7 @@ RULES = {
           'informationUri': 'https://google.github.io/clusterfuzzlite/',
           'rules': [
             {
-              'id': BUG_ID,
+              'id': 'no-unused-vars',
               'shortDescription': {
                 'text': 'disallow unused variables'
               },
@@ -64,68 +65,41 @@ RULES = {
         }
       ],
       'results': [
-        {
-          'level': 'error',
-          'message': {
-            'text': '"x" is assigned a value but never used.'
-          },
-          'locations': [
-            {
-              'physicalLocation': {
-                'artifactLocation': {
-                  'uri': 'file:///C:/dev/sarif/sarif-tutorials/samples/Introduction/simple-example.js',
-                  'index': 0
-                },
-                'region': {
-                  'startLine': 1,
-                  'startColumn': 5
-                }
-              }
-            }
-          ],
-          'ruleId': 'no-unused-vars',
-          'ruleIndex': 0
-        }
       ]
     }
   ]
 }
 
-def get_sarif_data(stacktrace):
+def get_sarif_data(crash_info):
   result = {
-      'ruleId': BUG_ID,
-      'partialFingerprints': {  # TODO(metzman): Use the stackframes.
-        'primaryLocationLineHash': ''
-      },
+      'level': 'error',
       'message': {
-        'text': 'A bug'
-      }
-  }
-  # TODO(metzman): Add location.
-  run = {
-      'tool': {
-          'driver': {
-              'name': 'CIFuzz',
-              'rules': RULES,
-              # TODO(metzman): Finish this.
-              'informationUri': 'https://CIFuzz/Docs',
-          },
+          'text': '"x" is assigned a value but never used.'
       },
-      'results': [result],
+      'locations': [
+          {
+              'physicalLocation': {
+                  'artifactLocation': {
+                      'uri': 'file:///C:/dev/sarif/sarif-tutorials/samples/Introduction/simple-example.js',
+                      'index': 0
+                  },
+                  'region': {
+                      'startLine': 1,
+                      'startColumn': 5
+                  }
+              }
+          }
+      ],
+      'ruleId': 'no-unused-vars',
+      'ruleIndex': 0
   }
+  data = copy.deepcopy(RULES)
+  data['runs'][0]['results'] = result
+  return data
 
 
-  data = {
-      '$schema': ('https://raw.githubusercontent.com/oasis-tcs/sarif-spec/'
-                  'master/Schemata/sarif-schema-2.1.0.json'),
-      'version': '2.1.0', # !!! Delete?
-      'runs': [run]
-  }
-  return RULES
-
-
-def write_sarif_data(stacktraces, workspace):
-  data = get_sarif_data(stacktraces[0])
+def write_crash_to_sarif(crash_info, workspace):
+  data = get_sarif_data(crash_info)
   workspace.initialize_dir(workspace.sarif)
   with open(os.path.join(workspace.sarif, 'results.sarif'), 'w') as file_handle:
     file_handle.write(json.dumps(data))

@@ -12,13 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for sarif_utils."""
+import os
 import unittest
+
+from clusterfuzz import stacktraces
 
 import sarif_utils
 
+TEST_DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              'test_data')
+
+
 class GetSarifData(unittest.TestCase):
   def test_get_sarif_data(self):
-    data = sarif_utils.get_sarif_data('', '')
+    with open(os.path.join(TEST_DATA_PATH, 'example_crash_fuzzer_output.txt')) as fp:
+      fuzzer_output = fp.read()
+
+    stack_parser = stacktraces.StackParser(fuzz_target='blah',
+                                           symbolized=True,
+                                           detect_ooms_and_hangs=True,
+                                           include_ubsan=True)
+    crash_info = stack_parser.parse(fuzzer_output)
+    from remote_pdb import RemotePdb; RemotePdb('127.0.0.1', 4445).set_trace()
+    data = sarif_utils.get_sarif_data(crash_info)
     with open('/tmp/k.sarif', 'w') as fp:
       import json
       fp.write(json.dumps(data))

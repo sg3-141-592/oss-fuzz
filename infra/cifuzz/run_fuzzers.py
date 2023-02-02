@@ -18,6 +18,8 @@ import os
 import sys
 import time
 
+from clusterfuzz import stacktraces
+
 import clusterfuzz_deployment
 import fuzz_target
 import generate_coverage_report
@@ -49,8 +51,6 @@ class BaseFuzzTargetRunner:
 
     # Set by the initialize method.
     self.fuzz_target_paths = None
-
-    self._stacktraces = []
 
   def get_fuzz_targets(self):
     """Returns fuzz targets in out directory."""
@@ -143,16 +143,24 @@ class BaseFuzzTargetRunner:
                      target.target_name)
         continue
 
-      self._stacktraces.append(result.stacktrace)
+      write_fuzz_result_to_sarif(result, target_path, workspace)
       bug_found = True
       if self.quit_on_bug_found:
         logging.info('Bug found. Stopping fuzzing.')
         break
 
     self.clusterfuzz_deployment.upload_crashes()
-    sarif_utils.write_sarif_data(self._stacktraces, self.workspace)
     return bug_found
 
+
+def write_fuzz_result_to_sarif(result, target_path, workspace):
+  fuzz_target = os.path.basename(target_path)
+  stack_parser = stacktraces.StackParser(fuzz_target=fuzz_target,
+                                         symbolized=True,
+                                         detect_ooms_and_hangs=True,
+                                         include_ubsan=True)
+  crash_info = stack_parser.parse(result.stacktrace)
+  sarif_utils.write_crash_to_sarif(crash_info, workspace)
 
 class PruneTargetRunner(BaseFuzzTargetRunner):
   """Runner that prunes corpora."""
