@@ -143,7 +143,7 @@ class BaseFuzzTargetRunner:
                      target.target_name)
         continue
 
-      write_fuzz_result_to_sarif(result, target_path, workspace)
+      write_fuzz_result_to_sarif(result, target_path, self.workspace)
       bug_found = True
       if self.quit_on_bug_found:
         logging.info('Bug found. Stopping fuzzing.')
