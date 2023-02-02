@@ -70,7 +70,12 @@ RULES = {
   ]
 }
 
-SRC_ROOT = '/src'
+SRC_ROOT = '/src/'
+
+def redact_src_path(src_path):
+  if src_path.startswith(SRC_ROOT):
+    src_path = src_path[len(SRC_ROOT):]
+  return src_path
 
 
 def get_frame(crash_info):
@@ -97,9 +102,8 @@ def get_frame_info(crash_info):
 
 def get_sarif_data(crash_info):
   frame_info = get_frame_info(crash_info)
-  uri = frame_info[0]
-  if uri.startswith(SRC_ROOT):
-    uri = uri[len(SRC_ROOT):]
+  uri = redact_src_path(frame_info[0])
+
   result = {
       'level': 'error',
       'message': {
