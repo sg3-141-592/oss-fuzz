@@ -87,8 +87,8 @@ def get_frame(crash_info):
 def get_frame_info(crash_info):
   frame = get_frame(crash_info)
   if not frame:
-    return (None, 0)
-  return frame.filename,  int(frame.fileline)
+    return (None, 1)
+  return frame.filename, int(frame.fileline or 1)
 
 def get_sarif_data(crash_info):
   frame_info = get_frame_info(crash_info)
