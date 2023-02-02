@@ -70,6 +70,8 @@ RULES = {
   ]
 }
 
+SRC_ROOT = '/src'
+
 
 def get_frame(crash_info):
   if not crash_info.crash_state:
@@ -95,6 +97,9 @@ def get_frame_info(crash_info):
 
 def get_sarif_data(crash_info):
   frame_info = get_frame_info(crash_info)
+  uri = frame_info[0]
+  if uri.startswith(SRC_ROOT):
+    uri[len(SRC_ROOT):]
   result = {
       'level': 'error',
       'message': {
@@ -104,7 +109,7 @@ def get_sarif_data(crash_info):
           {
               'physicalLocation': {
                   'artifactLocation': {
-                      'uri': frame_info[0],
+                      'uri': uri,
                       'index': 0
                   },
                   'region': {
