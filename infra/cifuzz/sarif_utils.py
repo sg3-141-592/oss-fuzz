@@ -106,7 +106,7 @@ def get_sarif_data(crash_info):
                   },
                   'region': {
                       'startLine': frame_info[1],
-                      'startColumn': 0
+                      'startColumn': 1,
                   }
               }
           }
