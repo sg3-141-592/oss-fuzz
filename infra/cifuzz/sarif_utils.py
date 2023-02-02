@@ -78,7 +78,6 @@ def get_frame(crash_info):
   frames = crash_info.frames[0]
   if not frames:
     return
-  from remote_pdb import RemotePdb; RemotePdb('127.0.0.1', 4445).set_trace()
 
   print('state', state, crash_info.crash_state)
   for frame in frames:
