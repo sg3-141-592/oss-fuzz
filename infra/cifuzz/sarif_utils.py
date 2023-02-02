@@ -45,13 +45,13 @@ RULES = {
           'informationUri': 'https://google.github.io/clusterfuzzlite/',
           'rules': [
             {
-              'id': 'no-unused-vars',
+              'id': 'no-crashes',
               'shortDescription': {
-                'text': 'disallow unused variables'
+                'text': 'don\'t crash'
               },
               'helpUri': 'https://eslint.org/docs/rules/no-unused-vars',
               'properties': {
-                'category': 'Variables'
+                'category': 'Crashes'
               }
             }
           ]
@@ -70,27 +70,48 @@ RULES = {
   ]
 }
 
+
+def get_frame(crash_info):
+  if not crash_info.crash_state:
+    return
+  state = crash_info.crash_state.split('\n')[0]
+  frames = crash_info.frames[0]
+  if not frames:
+    return
+  for frame in frames:
+    if frame.function_name == state:
+      break
+  return frame
+
+
+def get_frame_info(crash_info):
+  frame = get_frame(crash_info)
+  if not frame:
+    return (None, None)
+  return frame.filename,  frame.fileline
+
 def get_sarif_data(crash_info):
+  frame_info = get_frame(crash_info)
   result = {
       'level': 'error',
       'message': {
-          'text': '"x" is assigned a value but never used.'
+          'text': crash_info.crash_type
       },
       'locations': [
           {
               'physicalLocation': {
                   'artifactLocation': {
-                      'uri': 'file:///C:/dev/sarif/sarif-tutorials/samples/Introduction/simple-example.js',
+                      'uri': frame_info[1],
                       'index': 0
                   },
                   'region': {
-                      'startLine': 1,
-                      'startColumn': 5
+                      'startLine': frame_info[0],
+                      'startColumn': 0
                   }
               }
           }
       ],
-      'ruleId': 'no-unused-vars',
+      'ruleId': 'no-crashes',
       'ruleIndex': 0
   }
   data = copy.deepcopy(RULES)
