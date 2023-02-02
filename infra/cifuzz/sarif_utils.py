@@ -78,7 +78,7 @@ def get_frame(crash_info):
   frames = crash_info.frames[0]
   if not frames:
     return
-  print('state', state)
+  print('state', state, crash_info.crash_state)
   for frame in frames:
     if frame.function_name == state:
       return frame
