@@ -33,7 +33,6 @@ class GetSarifData(unittest.TestCase):
                                            detect_ooms_and_hangs=True,
                                            include_ubsan=True)
     crash_info = stack_parser.parse(fuzzer_output)
-    from remote_pdb import RemotePdb; RemotePdb('127.0.0.1', 4445).set_trace()
     data = sarif_utils.get_sarif_data(crash_info)
     with open('/tmp/k.sarif', 'w') as fp:
       import json
