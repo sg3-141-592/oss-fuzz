@@ -101,11 +101,11 @@ def get_sarif_data(crash_info):
           {
               'physicalLocation': {
                   'artifactLocation': {
-                      'uri': frame_info[1],
+                      'uri': frame_info[0],
                       'index': 0
                   },
                   'region': {
-                      'startLine': frame_info[0],
+                      'startLine': frame_info[1],
                       'startColumn': 0
                   }
               }
