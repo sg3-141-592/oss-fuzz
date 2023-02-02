@@ -34,19 +34,19 @@ BUG_ID = 'bug'
 # ]
 
 RULES = {
-  "version": "2.1.0",
-  "$schema": "http://json.schemastore.org/sarif-2.1.0-rtm.4",
-  "runs": [
+  'version': '2.1.0',
+  '$schema': 'http://json.schemastore.org/sarif-2.1.0-rtm.4',
+  'runs': [
     {
-      "tool": {
-        "driver": {
-          "name": "ESLint",
-          "informationUri": "https://eslint.org",
-          "rules": [
+      'tool': {
+        'driver': {
+          'name': 'ClusterFuzzLite/CIFuzz',
+          'informationUri': 'https://google.github.io/clusterfuzzlite/',
+          'rules': [
             {
-              "id": "no-unused-vars",
-              "shortDescription": {
-                "text": "disallow unused variables"
+              'id': BUG_ID,
+              'shortDescription': {
+                'text': 'disallow unused variables'
               },
               "helpUri": "https://eslint.org/docs/rules/no-unused-vars",
               "properties": {
