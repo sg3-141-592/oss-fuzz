@@ -99,7 +99,7 @@ def get_sarif_data(crash_info):
   frame_info = get_frame_info(crash_info)
   uri = frame_info[0]
   if uri.startswith(SRC_ROOT):
-    uri[len(SRC_ROOT):]
+    uri = uri[len(SRC_ROOT):]
   result = {
       'level': 'error',
       'message': {
