@@ -91,6 +91,7 @@ def get_frame_info(crash_info):
   return frame.filename, int(frame.fileline or 1)
 
 def get_sarif_data(crash_info):
+  print(crash_info.crash_stacktrace)
   frame_info = get_frame_info(crash_info)
   result = {
       'level': 'error',
