@@ -25,8 +25,9 @@ def TestOneInput(data):
   fdp = atheris.FuzzedDataProvider(data)
   base = datetime(2012, 4, 6, 13, 26, 10)
   try:
-    cron_str = fdp.ConsumeString(50)
+    cron_str = fdp.ConsumeUnicodeNoSurrogates(50)
     hash_id = fdp.ConsumeBytes(2)
+
     croniter.croniter.is_valid(cron_str, hash_id=hash_id)
     itr = croniter.croniter(cron_str, base, hash_id=hash_id)
     idx = 0
